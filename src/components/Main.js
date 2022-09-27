@@ -2,9 +2,48 @@ import React, { Component } from 'react';
 
 class Main extends Component {
 
+  constructor(props){
+    super(props);
+  }
+  
+  componentDidMount(){
+    console.log(this.props);
+  }
+
   render() {
+    const showTable = this.props.products.map((product,key) => (
+      <div>
+      {this.props.account ==  product.owner ? (
+        <div>
+          <tr key={key}>
+            <th scope="row">{product.id.toString()}</th>
+            <td>{product.name}</td>
+            <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
+            <td>{product.owner}</td>
+            <td>
+              { !product.purchased
+                ? <button
+                    name={product.id}
+                    value={product.price}
+                    onClick={(event) => {
+                      this.props.purchaseProduct(event.target.name, event.target.value)
+                    }}
+                  >
+                    Buy
+                  </button>
+                : null
+              }
+              </td>
+          </tr>
+        </div>
+        ) : 
+        (
+            <div></div>
+        )}
+      </div>
+    ))
     return (
-      <div id="content">
+      <div id="content" className='container'>
         <h1>Add Product</h1>
         <form onSubmit={(event) => {
           event.preventDefault()
@@ -83,37 +122,13 @@ class Main extends Component {
             </tr>
           </thead>
           <tbody id="productList">
-            { this.props.products.map((product, key) => {
-              {this.props.account ==  product.owner ? (
-                <div>
-                  <tr key={key}>
-                    <th scope="row">{product.id.toString()}</th>
-                    <td>{product.name}</td>
-                    <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
-                    <td>{product.owner}</td>
-                    <td>
-                      { !product.purchased
-                        ? <button
-                            name={product.id}
-                            value={product.price}
-                            onClick={(event) => {
-                              this.props.purchaseProduct(event.target.name, event.target.value)
-                            }}
-                          >
-                            Buy
-                          </button>
-                        : null
-                      }
-                      </td>
-                  </tr>
-                </div>
-                ) : 
-                (
-                    <div></div>
-                )}
-            })}
+            
+              {showTable}
+          
           </tbody>
         </table>
+
+        
 
       </div>
     );
