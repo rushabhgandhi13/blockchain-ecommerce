@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Main.css';
 
 class Main extends Component {
 
@@ -12,38 +13,24 @@ class Main extends Component {
 
   render() {
     const showTable = this.props.products.map((product,key) => (
-      <div>
-      {this.props.account ==  product.owner ? (
-        <div>
-          <tr key={key}>
-            <th scope="row">{product.id.toString()}</th>
-            <td>{product.name}</td>
-            <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
-            <td>{product.owner}</td>
-            <td>
-              { !product.purchased
-                ? <button
-                    name={product.id}
-                    value={product.price}
-                    onClick={(event) => {
-                      this.props.purchaseProduct(event.target.name, event.target.value)
-                    }}
-                  >
-                    Buy
-                  </button>
-                : null
-              }
-              </td>
-          </tr>
-        </div>
-        ) : 
-        (
-            <div></div>
-        )}
-      </div>
+          <tbody id="productList">
+            
+          {this.props.account ==  product.owner ? (
+              <tr key={key}>
+                <th scope="row">{product.id.toString()}</th>
+                <td>{product.name}</td>
+                <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
+                <td>{product.owner}</td>
+              </tr>
+            ) : 
+            (
+                <div></div>
+            )}
+          
+          </tbody>
     ))
     return (
-      <div id="content" className='container'>
+      <div id="content" className='container col-lg-6 col-md-8 col-sm-12' style={{marginTop: "5vh"}}>
         <h1>Add Product</h1>
         <form onSubmit={(event) => {
           event.preventDefault()
@@ -73,8 +60,8 @@ class Main extends Component {
         </form>
         <p>&nbsp;</p>
         <h2>Buy Product</h2>
-        <table className="table">
-          <thead>
+        <table className="table table-bordered">
+          <thead className="thead-dark">
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
@@ -94,6 +81,7 @@ class Main extends Component {
                   <td>
                     { !product.purchased
                       ? <button
+                          className="btn btn-primary"
                           name={product.id}
                           value={product.price}
                           onClick={(event) => {
@@ -109,27 +97,38 @@ class Main extends Component {
               )
             })}
           </tbody>
-        </table>
+        </table>        
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+          View Your Products
+        </button>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Owner</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody id="productList">
-            
-              {showTable}
-          
-          </tbody>
-        </table>
 
-        
-
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document" style={{maxWidth: '55vw'}}>
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Your Products</h5>
+              </div>
+              <div class="modal-body">
+              <table className="table table-bordered">
+                <thead className="thead-dark">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                {showTable}
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
