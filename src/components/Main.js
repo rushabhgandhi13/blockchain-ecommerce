@@ -19,6 +19,7 @@ class Main extends Component {
               <tr key={key}>
                 <th scope="row">{product.id.toString()}</th>
                 <td>{product.name}</td>
+                <td>{product.desc}</td>
                 <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
                 <td>{product.owner}</td>
               </tr>
@@ -35,8 +36,9 @@ class Main extends Component {
         <form onSubmit={(event) => {
           event.preventDefault()
           const name = this.productName.value
+          const desc = this.productDesc.value
           const price = window.web3.utils.toWei(this.productPrice.value.toString(), 'Ether')
-          this.props.createProduct(name, price)
+          this.props.createProduct(name, desc, price)
         }}>
           <div className="form-group mr-sm-2">
             <input
@@ -45,6 +47,15 @@ class Main extends Component {
               ref={(input) => { this.productName = input }}
               className="form-control"
               placeholder="Product Name"
+              required />
+          </div>
+          <div className="form-group mr-sm-2">
+            <input
+              id="productDesc"
+              type="text"
+              ref={(input) => { this.productDesc = input }}
+              className="form-control"
+              placeholder="Product Description"
               required />
           </div>
           <div className="form-group mr-sm-2">
@@ -65,6 +76,7 @@ class Main extends Component {
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
+              <th scope="col">Desc</th>
               <th scope="col">Price</th>
               <th scope="col">Owner</th>
               <th scope="col"></th>
@@ -76,6 +88,7 @@ class Main extends Component {
                 <tr key={key}>
                   <th scope="row">{product.id.toString()}</th>
                   <td>{product.name}</td>
+                  <td>{product.desc}</td>
                   <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
                   <td>{product.owner}</td>
                   <td>
@@ -115,6 +128,7 @@ class Main extends Component {
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Desc</th>
                     <th scope="col">Price</th>
                     <th scope="col">Owner</th>
                     <th scope="col"></th>

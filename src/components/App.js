@@ -64,11 +64,11 @@ class App extends Component {
     this.purchaseProduct = this.purchaseProduct.bind(this)
   }
 
-  createProduct(name, price) {
+  createProduct(name, desc, price) {
     this.setState({ loading: true })
-    this.state.marketplace.methods.createProduct(name, price).send({ from: this.state.account })
+    this.state.marketplace.methods.createProduct(name, desc, price).send({ from: this.state.account })
     .once('receipt', (receipt) => {
-      this.setState({ loading: false })
+      this.setState({ loading: false }) 
     })
   }
 
