@@ -25,7 +25,7 @@ class Main extends Component {
               </tr>
             ) : 
             (
-                <div></div>
+                <div style={{display: "None"}}></div>
             )}
           
           </tbody>
@@ -92,7 +92,8 @@ class Main extends Component {
                   <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
                   <td>{product.owner}</td>
                   <td>
-                    { !product.purchased
+                  {this.props.account !=  product.owner ? (
+                     !product.purchased
                       ? <button
                           className="btn btn-primary"
                           name={product.id}
@@ -103,8 +104,11 @@ class Main extends Component {
                         >
                           Buy
                         </button>
-                      : null
-                    }
+                      : <button className="btn btn-secondary" disabled>Sold</button>
+                  ) : 
+                  (
+                      <button className="btn btn-success" disabled>Owned</button>
+                  )}
                     </td>
                 </tr>
               )
@@ -113,7 +117,7 @@ class Main extends Component {
         </table>        
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
           View Your Products
-        </button>
+        </button><br></br><br></br>
 
 
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -131,7 +135,6 @@ class Main extends Component {
                     <th scope="col">Desc</th>
                     <th scope="col">Price</th>
                     <th scope="col">Owner</th>
-                    <th scope="col"></th>
                   </tr>
                 </thead>
                 {showTable}

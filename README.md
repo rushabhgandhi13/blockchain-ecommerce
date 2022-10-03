@@ -57,11 +57,6 @@ npm install {name of dependency}
 5. View all owned products.
 6. Making transanctions using metamask.
 </pre>
----
-
-<h2 align="center">
-Screenshots of the project
-</h2>
 
 ---
 # Contributors
