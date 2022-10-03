@@ -55,7 +55,7 @@ npm install {name of dependency}
 3. Buy products.
 4. View all products.
 5. View all owned products.
-6. Making transanctions using metamask.
+6. Making transactions using metamask.
 </pre>
 ---
 
