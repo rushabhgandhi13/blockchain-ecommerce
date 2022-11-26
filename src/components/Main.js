@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Main.css';
+import {ethers} from 'ethers';
 
 class Main extends Component {
 
@@ -12,111 +13,189 @@ class Main extends Component {
   }
 
   render() {
-    const showTable = this.props.products.map((product,key) => (
-          <tbody id="productList">
+    const showTable = this.props.raisers.map((raiser,key) => (
+      <div className="my-4" key={key}>
+          {this.props.account ==  raiser.UserAccount ? (
             
-          {this.props.account ==  product.owner ? (
-              <tr key={key}>
-                <th scope="row">{product.id.toString()}</th>
-                <td>{product.name}</td>
-                <td>{product.desc}</td>
-                <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
-                <td>{product.owner}</td>
-              </tr>
+              <div className="card" style={{width: "40rem"}}>
+                <div className="card-body">
+                  <h5 className="card-title">{raiser.name}</h5>
+                  <h6 className="card-subtitle mb-2">{window.web3.utils.fromWei(raiser.AmountRequired.toString(), 'Ether')} Eth</h6>
+                  <h6 className="card-subtitle mb-2">{window.web3.utils.fromWei(raiser.AmountAlreadyRaised.toString(), 'Ether')} Eth</h6>
+                  <p className="card-text">{raiser.description}</p>
+                  <div>
+                  </div>
+                </div>
+                </div>
+            
             ) : 
             (
                 <div style={{display: "None"}}></div>
             )}
-          
-          </tbody>
+            </div>
     ))
     return (
-      <div id="content" className='container col-lg-6 col-md-8 col-sm-12' style={{marginTop: "5vh"}}>
-        <h1>Add Product</h1>
+      <div id="content" className='container-fluid' style={{marginTop: "5vh"}}>
+        <h1>Create Fund Raiser</h1>
         <form onSubmit={(event) => {
           event.preventDefault()
-          const name = this.productName.value
-          const desc = this.productDesc.value
-          const price = window.web3.utils.toWei(this.productPrice.value.toString(), 'Ether')
-          this.props.createProduct(name, desc, price)
+          const name = this.raiserName.value
+          const desc = this.raiserDesc.value
+          const amountToRaise = this.raiserPrice.value.toString()
+          this.props.createRaiser(name, desc, amountToRaise)
         }}>
           <div className="form-group mr-sm-2">
             <input
               id="productName"
               type="text"
-              ref={(input) => { this.productName = input }}
+              ref={(input) => { this.raiserName = input }}
               className="form-control"
-              placeholder="Product Name"
+              placeholder="Fund Raiser Name"
               required />
           </div>
           <div className="form-group mr-sm-2">
             <input
               id="productDesc"
               type="text"
-              ref={(input) => { this.productDesc = input }}
+              ref={(input) => { this.raiserDesc = input }}
               className="form-control"
-              placeholder="Product Description"
+              placeholder="Fund Raiser Description"
               required />
           </div>
           <div className="form-group mr-sm-2">
             <input
               id="productPrice"
               type="text"
-              ref={(input) => { this.productPrice = input }}
+              ref={(input) => { this.raiserPrice = input }}
               className="form-control"
-              placeholder="Product Price"
+              placeholder="Amount to raise"
               required />
           </div>
-          <button type="submit" className="btn btn-primary">Add Product</button>
+          <button type="submit" className="btn btn-primary">Create Fund Raiser</button>
         </form>
         <p>&nbsp;</p>
-        <h2>Buy Product</h2>
-        <table className="table table-bordered">
-          <thead className="thead-dark">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Desc</th>
-              <th scope="col">Price</th>
-              <th scope="col">Owner</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody id="productList">
-            { this.props.products.map((product, key) => {
-              return(
-                <tr key={key}>
-                  <th scope="row">{product.id.toString()}</th>
-                  <td>{product.name}</td>
-                  <td>{product.desc}</td>
-                  <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
-                  <td>{product.owner}</td>
-                  <td>
-                  {this.props.account !=  product.owner ? (
-                     !product.purchased
-                      ? <button
-                          className="btn btn-primary"
-                          name={product.id}
-                          value={product.price}
-                          onClick={(event) => {
-                            this.props.purchaseProduct(event.target.name, event.target.value)
-                          }}
-                        >
-                          Buy
-                        </button>
-                      : <button className="btn btn-secondary" disabled>Sold</button>
-                  ) : 
-                  (
-                      <button className="btn btn-success" disabled>Owned</button>
-                  )}
-                    </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>        
+        <h2>Donate to a fund raiser</h2>
+      {/*<table className="table table-bordered">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Amount to raise</th>
+            <th scope="col">Amount already raised</th>
+            <th scope="col">Fund raiser address</th>
+          </tr>
+        </thead>
+        <tbody id="productList">
+          { this.props.raisers.map((raiser, key) => {
+            return(
+              <tr key={key}>
+                <th scope="row">{raiser.id.toString()}</th>
+                <td>{raiser.name}</td>
+                <td>{raiser.description}</td>
+                <td>{window.web3.utils.fromWei(raiser.AmountRequired.toString(), 'Ether')} Eth</td>
+                <td>{window.web3.utils.fromWei(raiser.AmountAlreadyRaised.toString(), 'Ether')} Eth</td>
+                <td>{raiser.UserAccount}</td>
+                <td>
+                {this.props.account !=  raiser.UserAccount ? (
+                    !raiser.raised
+                    ? 
+                    // <button
+                    //     className="btn btn-primary"
+                    //     name={raiser.id}
+                    //     value={raiser.price}
+                    //     onClick={(event) => {
+                    //       this.props.donateRaiser(event.target.name, event.target.value)
+                    //     }}
+                    //   >
+                    //     Donate
+                    //   </button>
+
+                      <div>
+                      <form onSubmit={(event) => {
+                        event.preventDefault()
+                        const name = raiser.id
+                        const amountToRaise = this.donPrice.value.toString()
+                        const val = ethers.utils.parseUnits(amountToRaise, "ether");
+                        this.props.donateRaiser(name, val)
+                      }}>
+                        <div className="form-group mr-sm-2">
+                          <input
+                            id="donPrice"
+                            type="text"
+                            ref={(input) => { this.donPrice = input }}
+                            className="form-control"
+                            placeholder="Amount to Donate"
+                            required />
+                        </div>
+                        <button type="submit" className="btn btn-primary">Donate</button>
+                      </form>
+                      </div>
+
+                    : <button className="btn btn-secondary" disabled>Closed</button>
+                ) : 
+                (
+                    <button className="btn btn-success" disabled>Personal fund raiser</button>
+                )}
+                  </td>
+              </tr>
+            )
+          })}
+        </tbody>
+        </table>*/}     
+        
+        <div>
+          <div className="row row-content">
+          { this.props.raisers.map((raiser, key) => {
+            return(
+              <div className="col-6 my-4" key={key}>
+              <div className="card" style={{width: "40rem"}}>
+                <div className="card-body">
+                  <h5 className="card-title">{raiser.name}</h5>
+                  <h6 className="card-subtitle mb-2 text-muted">{raiser.UserAccount}</h6>
+                  <h6 className="card-subtitle mb-2">{window.web3.utils.fromWei(raiser.AmountRequired.toString(), 'Ether')} Eth</h6>
+                  <h6 className="card-subtitle mb-2">{window.web3.utils.fromWei(raiser.AmountAlreadyRaised.toString(), 'Ether')} Eth</h6>
+                  <p className="card-text">{raiser.description}</p>
+                  <div>
+                  <form style={{display: "flex"}} onSubmit={(event) => {
+                        event.preventDefault()
+                        const name = raiser.id
+                        const amountToRaise = this.donPrice.value.toString()
+                        const val = ethers.utils.parseUnits(amountToRaise, "ether");
+                        this.props.donateRaiser(name, val)
+                      }}>
+                        <div className="form-group mr-sm-2">
+                          <input
+                            id="donPrice"
+                            type="text"
+                            ref={(input) => { this.donPrice = input }}
+                            className="form-control"
+                            placeholder="Amount to Donate"
+                            style={{width: "25vw"}}
+                            required
+                             />
+                        </div>
+                        <div className="form-group mr-sm-2">
+                        {this.props.account !=  raiser.UserAccount ? (
+                          !raiser.raised?
+                        (<button type="submit" className="btn btn-primary">Donate</button>)
+                        :
+                        (<button type="submit" className="btn btn-primary" disabled>Donate</button>)
+                        ):
+                        <button type="submit" className="btn btn-primary" disabled>Your own raiser</button>
+                      }
+                        </div>
+                      </form>
+                  </div>
+                </div>
+                </div>
+            </div>
+            )
+          })}
+          </div>
+        </div>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-          View Your Products
+          View Your Fund Raisers
         </button><br></br><br></br>
 
 
@@ -124,21 +203,11 @@ class Main extends Component {
           <div class="modal-dialog modal-dialog-centered" role="document" style={{maxWidth: '55vw'}}>
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Your Products</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Your Fund Raisers</h5>
               </div>
               <div class="modal-body">
-              <table className="table table-bordered">
-                <thead className="thead-dark">
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Desc</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Owner</th>
-                  </tr>
-                </thead>
+              
                 {showTable}
-                </table>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
